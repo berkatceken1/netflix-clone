@@ -17,5 +17,6 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    "react/no-unescaped-entities": "off", // JSX içinde &nbsp; gibi karakterler kullanılmamalıdır. onun yerine boşluk karakteri kullanılmalıdır.
   },
 }
