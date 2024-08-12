@@ -7,7 +7,7 @@ const AuthScreen = () => {
   const navigate = useNavigate();
 
   const handleFormSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // formun sayfayı yenilemesini engeller
     navigate(`/signup?email=${email}`);
   };
 

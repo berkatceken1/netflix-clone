@@ -6,10 +6,14 @@ import { generateTokenAndSetCookie } from "../utils/generateToken.js";
 
 export async function signup(req, res) {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, repassword } = req.body;
 
-        if (!username || !email || !password) {
+        if (!username || !email || !password || !repassword) {
             return res.status(400).json({success: false, message: 'Lütfen tüm alanları doldurunuz'});
+        }
+
+        if (password !== repassword) {
+            return res.status(400).json({success: false, message: 'Şifreler eşleşmiyor'});
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -60,9 +64,6 @@ export async function signup(req, res) {
             },
         });
         
-
-        
-
     } catch (error) {
         console.log("Error in signup controller",error.message);
         res.status(500).json({success: false, message: "Internal server error"});
@@ -110,6 +111,15 @@ export async function logout(req, res) {
         res.status(200).json({success: true, message: "Çıkış yapıldı"});
     } catch (error) {
         console.log("Error in logout controller",error.message);
+        res.status(500).json({success: false, message: "Internal server error"});
+    }
+}
+
+export async function authCheck(req, res) { // protectRoute middleware'den gelen req objesine user alanını ekleyen controller
+    try {
+        res.status(200).json({success: true, user: req.user});
+    } catch (error) {
+        console.log("Error in authCheck controller",error.message);
         res.status(500).json({success: false, message: "Internal server error"});
     }
 }

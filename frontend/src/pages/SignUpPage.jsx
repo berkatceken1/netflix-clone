@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { useAuthStore } from "../store/authUser";
+
 const SignUpPage = () => {
   const { searchParams } = new URL(document.location); // url'den gelen parametreleri almak için kullanılıyor
   const emailValue = searchParams.get("email"); // url'den gelen email parametresini alıyoruz
@@ -9,9 +11,11 @@ const SignUpPage = () => {
   const [password, setPassword] = useState("");
   const [repassword, setRepassword] = useState("");
 
+  const { signup } = useAuthStore();
+
   const handleSignUp = (e) => {
     e.preventDefault();
-    console.log(email, username, password, repassword);
+    signup({ email, username, password, repassword });
   };
 
   return (
