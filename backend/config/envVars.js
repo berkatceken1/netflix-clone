@@ -8,4 +8,7 @@ export const ENV_VARS = {
     JWT_SECRET: process.env.JWT_SECRET,
     NODE_ENV: process.env.NODE_ENV,
     TMDB_API_KEY: process.env.TMDB_API_KEY,
+    MAILTRAP_ENDPOINT: process.env.MAILTRAP_ENDPOINT,
+    MAILTRAP_TOKEN: process.env.MAILTRAP_TOKEN,
+    CLIENT_URL: process.env.CLIENT_URL,
 };

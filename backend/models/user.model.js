@@ -22,7 +22,19 @@ const userSchema = new mongoose.Schema({
     searchHistory: {
         type: Array,
         default: []
-    }
-})
+    },
+    lastLogin: {
+        type: Date,
+        default: Date.now
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    resetPasswordToken: String,
+    resetPasswordExpiresAt: Date,
+    verificationToken: String,
+    verificationTokenExpiresAt: Date
+}, {timestamps: true}); // timestamps: true adds createdAt and updatedAt fields to the schema
 
-export const User = mongoose.model('User', userSchema); // 'User' is the name of the collection in the database, users is the name of the model
+export const User = mongoose.model("User", userSchema); // 'User' is the name of the collection in the database, users is the name of the model

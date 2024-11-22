@@ -3,14 +3,15 @@ import { User } from '../models/user.model.js';
 import { ENV_VARS } from '../config/envVars.js';
 
 export const protectRoute = async (req, res, next) => {
-    try {
-        const token = req.cookies['jwt-netflix'];
+
+    const token = req.cookies['jwt-netflix'];
         
-        if (!token) {
-            return res.status(401).json({success: false, message: 'Unauthorized -No Token Provided'});
+    if (!token) {
+            return res.status(401).json({success: false, message: "Unauthorized -No Token Provided"});
         }
 
-        const decoded = jwt.verify(token, ENV_VARS.JWT_SECRET);
+    try {
+        const decoded = jwt.verify(token, ENV_VARS.JWT_SECRET); 
 
         if (!decoded) {
             return res.status(401).json({success: false, message: 'Unauthorized -Invalid Token'});
@@ -22,12 +23,22 @@ export const protectRoute = async (req, res, next) => {
             return res.status(404).json({success: false, message: 'User not found'});
         }
 
-        req.user = user; //kullanıcıyı request objesine ekliyoruz
+        // Email doğrulama kontrolü
+        if (!user.isVerified) {
+            return res.status(403).json({
+                success: false,
+                message: 'Email doğrulaması gerekli',
+                requiresVerification: true,
+                email: user.email
+            });
+        }
+
+        req.user = user; 
 
         next();
         
     } catch (error) {
-        console.error("Error in protectRoute middleware: " + error.message);
+        console.log("Error in protectRoute middleware: " + error);
         res.status(500).json({success: false, message: 'Internal Server Error'});
     }
 };

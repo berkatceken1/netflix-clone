@@ -30,6 +30,19 @@ function formatDate(dateString) {
   return `${day} ${month} ${year}`;
 }
 
+function translateSearchType(type) {
+  switch (type) {
+    case "movie":
+      return "Film";
+    case "tv":
+      return "Dizi";
+    case "person":
+      return "Kişi";
+    default:
+      return type;
+  }
+}
+
 const SearchHistoryPage = () => {
   const [searchHistory, setSearchHistory] = useState([]);
 
@@ -103,7 +116,7 @@ const SearchHistoryPage = () => {
                     : "bg-green-600"
                 }`}
               >
-                {entry.searchType[0].toUpperCase() + entry.searchType.slice(1)}
+                {translateSearchType(entry.searchType)}
               </span>
               <Trash
                 className="size-5 ml-4 cursor-pointer hover:fill-red-600 hover:text-red-600"

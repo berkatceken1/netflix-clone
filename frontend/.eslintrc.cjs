@@ -13,11 +13,11 @@ module.exports = {
   plugins: ['react-refresh'],
   rules: {
     'react/jsx-no-target-blank': 'off',
+    "react/no-unescaped-entities": "off", // JSX içinde &nbsp; gibi karakterler kullanılmamalıdır. onun yerine boşluk karakteri kullanılmalıdır.
+    "react/prop-types": "off", // prop-types kullanılmamalıdır.
     'react-refresh/only-export-components': [
       'warn',
       { allowConstantExport: true },
     ],
-    "react/no-unescaped-entities": "off", // JSX içinde &nbsp; gibi karakterler kullanılmamalıdır. onun yerine boşluk karakteri kullanılmalıdır.
-    "react/prop-types": "off", // prop-types kullanılmamalıdır.
   },
-}
+};

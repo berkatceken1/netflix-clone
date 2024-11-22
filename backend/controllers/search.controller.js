@@ -11,7 +11,7 @@ export async function searchPerson(req, res) {
             return res.status(404).send(null);
         }
 
-        await User.findOneAndUpdate(req.user._id , { 
+        await User.findOneAndUpdate(req.user._id, { 
             $push: { 
                 searchHistory: {
                     id: response.results[0].id,

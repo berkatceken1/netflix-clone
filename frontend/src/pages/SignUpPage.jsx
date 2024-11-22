@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuthStore } from "../store/authUser";
+import toast from "react-hot-toast";
 
 const SignUpPage = () => {
   const { searchParams } = new URL(document.location); // url'den gelen parametreleri almak için kullanılıyor
@@ -11,11 +12,28 @@ const SignUpPage = () => {
   const [password, setPassword] = useState("");
   const [repassword, setRepassword] = useState("");
 
-  const { signup, isSigningUp } = useAuthStore();
+  const { signup, error, isSigninUp } = useAuthStore();
 
-  const handleSignUp = (e) => {
+  const navigate = useNavigate();
+
+  const handleSignUp = async (e) => {
     e.preventDefault();
-    signup({ email, username, password, repassword });
+    try {
+      const result = await signup({ email, username, password, repassword });
+      if (result?.success && result?.redirectTo) {
+        toast.success("Kayıt başarılı! Lütfen email adresinizi doğrulayın.");
+
+        // 1.5 saniye sonra redirect yap
+        setTimeout(() => {
+          navigate(result.redirectTo);
+        }, 1500);
+      }
+    } catch (error) {
+      console.log("SignUp error: " + error);
+      toast.error(
+        error.response?.data?.message || "Hesap oluştururken bir hata oluştu"
+      );
+    }
   };
 
   return (
@@ -42,7 +60,7 @@ const SignUpPage = () => {
               <input
                 type="email"
                 className="w-full px-3 py-2 mt-1 border border-gray-500 rounded-md bg-transparent text-white focus:outline-none focus:ring"
-                placeholder="you@example.com"
+                placeholder="eposta adresinizi giriniz"
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -98,13 +116,16 @@ const SignUpPage = () => {
                 value={repassword}
                 onChange={(e) => setRepassword(e.target.value)}
               />
+              {error && (
+                <p className="text-red-500 font-semibold mt-2">{error}</p>
+              )}
             </div>
 
             <button
               className="w-full py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700"
-              disabled={isSigningUp}
+              disabled={isSigninUp}
             >
-              {isSigningUp ? "Yükleniyor..." : "Kayıt Ol"}
+              {isSigninUp ? "Yükleniyor..." : "Kayıt Ol"}
             </button>
 
             <div className="text-center text-gray-400">

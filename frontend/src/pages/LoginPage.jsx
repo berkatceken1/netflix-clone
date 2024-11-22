@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuthStore } from "../store/authUser";
 
@@ -6,11 +6,29 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { login, isLoggingIn } = useAuthStore();
+  const { login, isLoggingIn, error } = useAuthStore();
 
-  const handleLogin = (e) => {
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    login({ email, password });
+    try {
+      const result = await login({ email, password });
+
+      // Login başarılı ve email doğrulanmamışsa
+      if (result?.requiresVerification) {
+        navigate("/verify-email");
+        return;
+      }
+
+      // Login başarılı ve email doğrulanmışsa
+      if (result?.success) {
+        navigate("/");
+        return;
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+    }
   };
 
   return (
@@ -61,20 +79,32 @@ const LoginPage = () => {
               />
             </div>
 
+            <div className="flex items-center mb-6">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-gray-400 hover:underline"
+              >
+                Şifremi unuttum
+              </Link>
+            </div>
+
+            {error && (
+              <p className="text-red-500 font-semibold mb-2">{error}</p>
+            )}
+
             <button
               className="w-full py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700"
               disabled={isLoggingIn}
             >
               {isLoggingIn ? "Yükleniyor..." : "Giriş Yap"}
             </button>
-
-            <div className="text-center text-gray-400">
-              Henüz bir hesabınız yok mu?{" "}
-              <Link to={"/signup"} className="text-red-500 hover:underline">
-                Kayıt Ol
-              </Link>
-            </div>
           </form>
+          <div className="text-center text-gray-400">
+            Henüz bir hesabınız yok mu?{" "}
+            <Link to={"/signup"} className="text-red-500 hover:underline">
+              Kayıt Ol
+            </Link>
+          </div>
         </div>
       </div>
     </div>
